@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const setCookie = require("../utils/cookie")
 const {ErrorHandler} = require("../middlewares/Error")
+const jobCollection = require("../models/job")
 
 const checkRoute = (req, res) => {
     res.status(200).json({
@@ -28,11 +29,7 @@ const register = async (req, res, next) => {
         return setCookie(res, created_user, 201, 'user created successfully')
 
     } catch (error) {
-        console.log(error.message)
-        res.status(500).json({
-            success : true,
-            message : error.message
-        })
+        next(new ErrorHandler(error.message, 500))
     }
 }
 
@@ -56,12 +53,30 @@ const login = async (req,res, next) => {
         return next(new ErrorHandler('Invalid email or password', 404))
         
     } catch (error) {
-        console.log(error.message)
-        res.status(500).json({
-            success : true,
-            message : error.message
-        })
+        next(new ErrorHandler(error.message, 500))
     }
 }
 
-module.exports = {checkRoute, register, login}
+const addJob = async (req, res) => {
+    try {
+        const {company_name, company_logo, job_position, monthly_salary, 
+                job_type, remote_office, location, job_description, 
+                about_company, skills, information} = req.body
+
+                console.log(req.user._id)
+ 
+        const job = await jobCollection.create({company_name, company_logo, job_position, monthly_salary, 
+                                                job_type, remote_office, location, job_description, 
+                                                about_company, skills, information, user : req.user._id})
+        
+        res.status(201).json({
+            success : true,
+            message : 'Job added successfully'
+        })
+    } catch (error) {
+        next(new ErrorHandler(error.message, 500))
+    }
+    
+}
+
+module.exports = {checkRoute, register, login, addJob}
