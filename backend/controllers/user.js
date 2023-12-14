@@ -57,67 +57,36 @@ const login = async (req,res, next) => {
     }
 }
 
-const addJob = async (req, res) => {
+const addJob = async (req, res, next) => {
     try {
-        const {company_name, company_logo, job_position, monthly_salary, 
-                job_type, remote_office, location, job_description, 
-                about_company, skills, information} = req.body
+        const job = await jobCollection.create({
+            ...req.body,
+            user: req.user._id,
+        });
 
-                console.log(req.user._id)
- 
-        const job = await jobCollection.create({company_name, company_logo, job_position, monthly_salary, 
-                                                job_type, remote_office, location, job_description, 
-                                                about_company, skills, information, user : req.user._id})
-        
         res.status(201).json({
-            success : true,
-            message : 'Job added successfully'
-        })
+            success: true,
+            message: 'Job added successfully',
+        });
     } catch (error) {
-        next(new ErrorHandler(error.message, 500))
+        next(new ErrorHandler(error.message, 500));
     }
-    
-}
+};
 
 
 const updateJob = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const {
-            company_name,
-            company_logo,
-            job_position,
-            monthly_salary,
-            job_type,
-            remote_office,
-            location,
-            job_description,
-            about_company,
-            skills,
-            information,
-        } = req.body;
+        const { user } = req; 
 
-        const updatedFields = {
-            company_name,
-            company_logo,
-            job_position,
-            monthly_salary,
-            job_type,
-            remote_office,
-            location,
-            job_description,
-            about_company,
-            skills,
-            information,
-        };
+        const updatedJob = await jobCollection.findByIdAndUpdate(
+            id,
+            { ...req.body, user: user._id },
+            { new: true }
+        );
 
-        const updatedJob = await jobCollection.findOneAndUpdate({ _id: id },{ $set: updatedFields }, {new : true});
-        console.log(updateJob)
         if (!updatedJob) {
-            return res.status(404).json({
-                success: false,
-                message: 'Job not found',
-            });
+            return next(new ErrorHandler("Job Not Found", 404));
         }
 
         res.status(200).json({
@@ -125,11 +94,11 @@ const updateJob = async (req, res, next) => {
             message: 'Job updated successfully',
         });
     } catch (error) {
-        next(new ErrorHandler("Internal server error", 500));
+        next(new ErrorHandler(error.message, 500));
     }
 };
 
-const getSpecificJob = async (req, res, next) => {
+const searchJob = async (req, res, next) => {
     try {
         const {job_position, skills} = req.body
 
@@ -138,10 +107,10 @@ const getSpecificJob = async (req, res, next) => {
               { job_position: { $eq: job_position } },
               { skills: { $in: skills } }
             ]
-          });
+          }).select('-user');
 
         if(!jobs){
-            next(new ErrorHandler("Jobs not found", 404))
+            return next(new ErrorHandler("Jobs not found", 404))
         }
         res.status(200).json({
             success : true,
@@ -152,4 +121,23 @@ const getSpecificJob = async (req, res, next) => {
     }
 }
 
-module.exports = {checkRoute, register, login, addJob, updateJob, getSpecificJob}
+const getSpecificJob = async (req, res, next) => {
+    try {
+        const {id} = req.params
+        const job = await jobCollection.findById(id).select('-user');
+
+        if(!job){
+            return next(new ErrorHandler("Jobs not found", 404))
+        }
+
+        res.status(200).json({
+            success : true,
+            job
+        })
+        
+    } catch (error) {
+        next(new ErrorHandler(error.message, 500))
+    }
+}
+
+module.exports = {checkRoute, register, login, addJob, updateJob, searchJob, getSpecificJob}
