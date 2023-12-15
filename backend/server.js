@@ -1,5 +1,5 @@
 const app = require('./app')
-const connectDB = require('./config/database')
+const connectDB = require('./data/database')
 
 app.listen(process.env.PORT, () => {
     connectDB()
