@@ -26,7 +26,10 @@ const register = async (req, res, next) => {
 
         const created_user = await userCollection.create({name, email, mobile, password : hashed_password})
 
-        return setCookie(res, created_user, 201, `${name} registered successfully`)
+        const words = name.split(' ');
+        const trimmedName = words.slice(0, 1).join(' ');
+
+        return setCookie(res, created_user, 201, `${trimmedName} registered successfully`)
 
     } catch (error) {
         next(new ErrorHandler(error.message, 500))
@@ -46,8 +49,11 @@ const login = async (req,res, next) => {
 
         const password_match = await bcrypt.compare(password, user.password)
 
+        const words = user.name.split(' ');
+        const trimmedName = words.slice(0, 1).join(' ');
+
         if(password_match){
-            return setCookie(res, user, 200, `Welcome ${user.name}`)
+            return setCookie(res, user, 200, `Welcome ${trimmedName}`)
         }  
 
         return next(new ErrorHandler('Invalid email or password', 404))
@@ -61,6 +67,7 @@ const addJob = async (req, res, next) => {
     try {
         const job = await jobCollection.create({
             ...req.body,
+            skills : req.body.skills.split(',').map(skill => skill.trim()),
             user: req.user._id,
         });
 
@@ -140,4 +147,16 @@ const getSpecificJob = async (req, res, next) => {
     }
 }
 
-module.exports = {checkRoute, register, login, addJob, updateJob, searchJob, getSpecificJob}
+const logout = (req, res, next) => {
+    try {
+        res.status(200).cookie("token", "", {expires : new Date(Date.now()), sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none", 
+        secure :   process.env.NODE_ENV === "Development" ? false : true}).json({
+            success : true,
+            message : "logged out"
+        })
+    } catch (error) {
+        next(new ErrorHandler(error.message, 500))
+    }
+}
+
+module.exports = {checkRoute, register, login, addJob, updateJob, searchJob, getSpecificJob, logout}
