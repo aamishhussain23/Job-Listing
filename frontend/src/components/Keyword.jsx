@@ -2,12 +2,21 @@ import React from 'react'
 import styles from '../styles/keyword.module.css'
 
 
-const Keyword = ({skill}) => {
+const Keyword = ({skill, setSkillsArr, id}) => {
+  // console.log(id)
+  const handleCross = () => {
+      setSkillsArr((prevSkillsArr) => {
+        const updatedSkillsArr = [...prevSkillsArr];
+          updatedSkillsArr.splice(id, 1);
+        return updatedSkillsArr;
+      });
+      console.log(id)
+  }
   return (
       <>
         <div className={styles.parent}>
               <span>{skill}</span>  
-          <div className={styles.cross}>╳</div>
+          <div onClick={handleCross} className={styles.cross}>╳</div>
         </div>
       </>
     

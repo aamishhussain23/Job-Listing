@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from '../styles/home.module.css'
 import { useNavigate, Link } from 'react-router-dom'
 import searchIcon from '../assets/searchIcon.png'
@@ -6,11 +6,51 @@ import {Keyword} from './Keyword'
 import Jobcards from './Jobcards'
 import helmentMan from '../assets/helmetMan.png'
 import { Context } from '..'
+import axios from 'axios'
+import { server } from '../App'
+import toast from 'react-hot-toast'
  
 const Home = () => {
   const navigate = useNavigate() 
   const {isAuthenticated, setIsAuthenticated} = useContext(Context)  
-  setIsAuthenticated(true) 
+  const [job_title, setJob_title] = useState("")
+  const [skillsArr, setSkillsArr] = useState([])
+  const [jobs, setJobs] = useState([{}])
+  // setIsAuthenticated(true) 
+  console.log(job_title)
+  console.log(skillsArr)
+
+  const addSkills = (e) => {
+      const selectedSkill = e.target.value
+      if(selectedSkill !== ""){
+
+        if(!skillsArr.includes(selectedSkill)){
+            setSkillsArr([...skillsArr, selectedSkill])
+        }
+        // console.log(skillsArr)
+
+      }
+  }
+
+  useEffect(() => {
+    const getAllJobs = async () => {
+      try {
+        const { data } = await axios.post(
+          `${server}/searchJob`,
+          { job_position : job_title, skills: skillsArr },
+          { withCredentials: true, headers: { "Content-Type": "application/json" } }
+        );
+        console.log("api data",data)
+        setJobs(data.jobs);
+      } catch (error) {
+        toast.error(error.response.data.message);
+      }
+    };
+  
+    getAllJobs();
+  }, [skillsArr, job_title]);
+  
+  // console.log("jobs array",jobs)
 
   return (
     <div className={styles.container}> 
@@ -41,10 +81,10 @@ const Home = () => {
         <div className={styles.searchArea}>
             <div className={styles.search}>
                 <img src={searchIcon} alt="" />
-                <input type="text" placeholder='Type any job title'/>
+                <input onChange={(e) => setJob_title(e.target.value)} type="text" placeholder='Type any job title'/>
             </div>
             <div className={styles.wrapper}>
-              <select className={styles.select} name="Skills">
+              <select onChange={addSkills} className={styles.select} name="Skills">
                 <option value="">Skills</option>
                 <option value="html">HTML</option>
                 <option value="css">CSS</option>
@@ -56,24 +96,38 @@ const Home = () => {
                 <option value="python">python</option>
               </select>
               <div className={styles.keywords}> 
-                <Keyword skill={"Frontend"}></Keyword> 
-                <Keyword skill={"JavaScript"}></Keyword>
-                <Keyword skill={"React"}></Keyword>
-                <Keyword skill={"NodeJs"}></Keyword>
-                <Keyword skill={"Python"}></Keyword>
-                <Keyword skill={"Python"}></Keyword>
-              </div> 
-                <button className={styles.addjob}>+ Add Job</button>
-              <p className={styles.clear}>Clear</p>
+                {
+                  skillsArr ? skillsArr.map((skill, idx) => (
+                    <Keyword id={idx} setSkillsArr={setSkillsArr} key={idx} skill={skill}></Keyword>
+                    
+                  )) :  null
+                } 
+                
+              </div>  
+                <button onClick={() => navigate('/add-job')} className={styles.addjob}>+ Add Job</button>
+              <p onClick={() => setSkillsArr([])} className={styles.clear}>Clear</p>
             </div>
         </div>
         <br />
         <br />
         {/* <br /> */}
+        {
+          jobs ? jobs.map((e) => (
+            <Jobcards 
+            key={e._id} 
+            position={e.job_position?.toUpperCase()}
+            name={e.company_name} 
+            salary={e.monthly_salary}
+            location={e.location}
+            remote_office={e.remote_office}
+            type={e.job_type}
+            skills={e.skills}
+            ></Jobcards>
+          )) : null
+        }
+        {/* <Jobcards></Jobcards>
         <Jobcards></Jobcards>
-        <Jobcards></Jobcards>
-        <Jobcards></Jobcards>
-        <Jobcards></Jobcards>
+        <Jobcards></Jobcards> */}
       </main>
     </div>
   )
