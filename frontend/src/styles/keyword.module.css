@@ -1,0 +1,56 @@
+.parent {
+    height: 2rem;
+    width: 6.8rem;
+    display: flex;
+    align-items: center;
+    background-color: #FFEEEE;
+    border: none;
+    margin-left: 20px;
+}
+
+.parent > span{
+    margin-left: 10%;
+}
+
+.cross{
+    margin-left: auto;
+    background-color: #FF6B6B;
+    height: 100%;
+    width: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.skillbox{
+    height: 2rem;
+    width: 5.5rem;
+    background-color: #FFEEEE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "DM Sans";
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0 5px;
+}
+
+@media (max-width: 1111px) {
+    .parent{
+        margin-left: 0;
+        margin-right: 10px;
+    }
+}
+
+@media (max-width: 1330px){
+    .skillbox{
+        margin: 2px 5px;
+    }
+}
+
+/* *{
+    border: 1px solid green;
+} */
