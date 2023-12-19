@@ -7,7 +7,7 @@ const isAuthenticated = async (req, res, next) => {
         const {token} = req.cookies
         
         if(!token){
-            return next(new ErrorHandler('Login First', 404))
+            return 
         }
         
         const data = jwt.verify(token, process.env.JWT_SECRET)
