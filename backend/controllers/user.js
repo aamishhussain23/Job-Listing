@@ -2,7 +2,7 @@ const userCollection = require("../models/user")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const setCookie = require("../utils/cookie")
-const {ErrorHandler} = require("../middlewares/Error")
+const {ErrorHandler, errorMiddleware} = require("../middlewares/Error")
 const jobCollection = require("../models/job")
 
 const checkRoute = (req, res) => {
@@ -147,10 +147,35 @@ const getSpecificJob = async (req, res, next) => {
     }
 }
 
+const getAllJobs = async (req, res, next) => {
+    const jobs = await jobCollection.find({})
+    if(!jobs){
+        return next(new errorMiddleware("No Jobs Found", 404))
+    }
+    res.status(200).json({
+        success : true,
+        jobs
+    })
+}
+
+const getMyProfile = async (req, res, next) => {
+    const profile = await userCollection.findById(req.user._id).select("-_id")
+    if(!profile){
+        return next(new errorMiddleware("Profile not found", 404))
+    }
+    res.status(200).json({
+        success : true,
+        profile
+    })
+}
+
+
 const logout = (req, res, next) => {
     try {
-        res.status(200).cookie("token", "", {expires : new Date(Date.now()), sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none", 
-        secure :   process.env.NODE_ENV === "Development" ? false : true}).json({
+        res.status(200).cookie("token", "", {expires : new Date(Date.now()), 
+        sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none", 
+        secure :   process.env.NODE_ENV === "Development" ? false : true
+    }).json({
             success : true,
             message : "logged out"
         })
@@ -159,4 +184,4 @@ const logout = (req, res, next) => {
     }
 }
 
-module.exports = {checkRoute, register, login, addJob, updateJob, searchJob, getSpecificJob, logout}
+module.exports = {checkRoute, register, login, addJob, updateJob, searchJob, getSpecificJob, logout, getAllJobs, getMyProfile}
