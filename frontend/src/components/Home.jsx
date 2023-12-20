@@ -1,86 +1,134 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styles from '../styles/home.module.css'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import searchIcon from '../assets/searchIcon.png'
 import {Keyword} from './Keyword'
 import Jobcards from './Jobcards'
-import helmentMan from '../assets/helmetMan.png'
+
 import { Context } from '..'
 import axios from 'axios'
 import { server } from '../App'
 import toast from 'react-hot-toast'
+import Loader from './Loader'
+import Navbar from './Navbar'
  
 const Home = () => {
   const navigate = useNavigate() 
-  const {isAuthenticated, setIsAuthenticated} = useContext(Context)  
+  const {isAuthenticated, setIsAuthenticated, loading, setLoading, setCompany_name,
+  setCompany_logo, setJob_position, setMonthly_salary, setJob_type, setJob_duration, 
+  setRemote_office, setLocation, setJob_description, setAbout_company, setSkills, setInformation, setFormEdit} = useContext(Context)  
+
   const [job_title, setJob_title] = useState("")
   const [skillsArr, setSkillsArr] = useState([])
-  const [jobs, setJobs] = useState([{}])
-  // setIsAuthenticated(true) 
-  console.log(job_title)
-  console.log(skillsArr)
+  const [jobs, setJobs] = useState([])
+  const [user, setUser] = useState({})
+  
+
+  const searchJobApi = async () => {
+    try {
+      const { data } = await axios.post(
+        `${server}/searchJob`,
+        { job_position: job_title, skills: skillsArr },
+        { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
+      );
+      setLoading(false);
+      setJobs(data.jobs);
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.response.data.message);
+    }
+  };
+
+  
+  const getAllJobsApi = async () => {
+    try {
+      const { data } = await axios.get(`${server}/getAllJobs`, { withCredentials: true });
+      
+      setLoading(false);
+      setJobs(data.jobs);
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.response.data.message);
+    }
+  };
+  
+  
+  const getMyProfileApi = async () => {
+    setLoading(true)
+    try {
+      const {data} = await axios.get(`${server}/me`, {withCredentials : true})
+      setLoading(false)
+      setUser(data.profile)
+      setIsAuthenticated(true)
+    } catch (error) {
+      setLoading(false)
+      setIsAuthenticated(false)
+      toast.error(error.response.data.message)
+    }
+    
+  }
+  
+
 
   const addSkills = (e) => {
-      const selectedSkill = e.target.value
-      if(selectedSkill !== ""){
-
-        if(!skillsArr.includes(selectedSkill)){
-            setSkillsArr([...skillsArr, selectedSkill])
-        }
-        // console.log(skillsArr)
-
+    const selectedSkill = e.target.value;
+    if (selectedSkill !== '') {
+      if (!skillsArr.includes(selectedSkill)) {
+        setSkillsArr([...skillsArr, selectedSkill]);
       }
+    }
+  };
+
+  const goToAddJobPage = () => {
+    setCompany_name("")
+    setCompany_logo("")
+    setJob_position("")
+    setMonthly_salary("")
+    setJob_type("")
+    setJob_duration("")
+    setRemote_office("")
+    setLocation("")
+    setJob_description("")
+    setAbout_company("")
+    setSkills("")
+    setInformation("")
+    setFormEdit(false)
+    navigate('/add-job')
   }
+  
+  const handleSearchClick = (e) => {
+    e.preventDefault(); 
+    if(job_title.length === 0 && skillsArr.length === 0){
+      return getAllJobsApi()
+    }
+    searchJobApi();
+  };
+  
+  useEffect(() => {
+    if(job_title.length === 0 && skillsArr.length === 0){
+        getAllJobsApi()
+      }
+      else{
+        searchJobApi()
+      }
+  }, [skillsArr, job_title])
+
 
   useEffect(() => {
-    const getAllJobs = async () => {
-      try {
-        const { data } = await axios.post(
-          `${server}/searchJob`,
-          { job_position : job_title, skills: skillsArr },
-          { withCredentials: true, headers: { "Content-Type": "application/json" } }
-        );
-        console.log("api data",data)
-        setJobs(data.jobs);
-      } catch (error) {
-        toast.error(error.response.data.message);
-      }
-    };
-  
-    getAllJobs();
-  }, [skillsArr, job_title]);
-  
-  // console.log("jobs array",jobs)
+    getMyProfileApi()
+  }, [])
 
   return (
-    <div className={styles.container}> 
-      <header className={styles.header}>
-          <p className={styles.logo}>Jobfinder</p> 
-          <div className={`${styles.buttons} ${isAuthenticated ? styles.logoutWidth : styles.btnWidth}`}> 
-            {
-              isAuthenticated ? 
-              <>
-                <Link className={styles.logout}>Logout</Link>
-                <span className={styles.greet}>Hello! Recruiter</span>
-                <img className={styles.recruiter_img} src={helmentMan} alt="" />
-              </> 
-
-              :
-
-              <>
-                  <button className={styles.login} onClick={() => navigate('/login')}>Login</button>
-                  <button className={styles.register} onClick={() => navigate('/register')}>Register</button>
-              </>
-
-            }
-              
-          </div>
-      </header>
+    <>
+      {
+        loading ? <Loader/> : 
+        <div className={styles.container}> 
+        <Navbar name={user.name?.split(' ')[0]}></Navbar>
 
       <main className={styles.main}>
         <div className={styles.searchArea}>
             <div className={styles.search}>
-                <img src={searchIcon} alt="" />
+                <img onClick={handleSearchClick} src={searchIcon} alt="" role="button" />
                 <input onChange={(e) => setJob_title(e.target.value)} type="text" placeholder='Type any job title'/>
             </div>
             <div className={styles.wrapper}>
@@ -104,17 +152,19 @@ const Home = () => {
                 } 
                 
               </div>  
-                <button onClick={() => navigate('/add-job')} className={styles.addjob}>+ Add Job</button>
+                {
+                  isAuthenticated ? <button onClick={goToAddJobPage} className={styles.addjob}>+ Add Job</button> : null
+                }
               <p onClick={() => setSkillsArr([])} className={styles.clear}>Clear</p>
             </div>
         </div>
         <br />
         <br />
-        {/* <br /> */}
         {
-          jobs ? jobs.map((e) => (
+          jobs ? jobs.map((e, idx) => (
             <Jobcards 
-            key={e._id} 
+            key={idx} 
+            id={e._id}
             position={e.job_position?.toUpperCase()}
             name={e.company_name} 
             salary={e.monthly_salary}
@@ -125,11 +175,10 @@ const Home = () => {
             ></Jobcards>
           )) : null
         }
-        {/* <Jobcards></Jobcards>
-        <Jobcards></Jobcards>
-        <Jobcards></Jobcards> */}
       </main>
     </div>
+      }
+    </>
   )
 }
 
