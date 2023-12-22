@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 
 const Viewdetails = () => {
 
-    const {isAuthenticated, setIsAuthenticated, setLoading, setFormEdit, job_id, setJob_id} = useContext(Context)
+    const {isAuthenticated, setIsAuthenticated, setLoading, setFormEdit, job_id, setJob_id, currSkill} = useContext(Context)
 
     const [user, setUser] = useState({})
     const [company, setCompany] = useState({})
@@ -27,7 +27,6 @@ const Viewdetails = () => {
         } catch (error) {
           setLoading(false)
           setIsAuthenticated(false)
-          toast.error(error.response.data.message)
         }
         
       }
@@ -121,18 +120,14 @@ const Viewdetails = () => {
             <h2>Skill(s) required</h2>
             <br />
             <div className={styles.allSkills}>
-                <div className={styles.skills_div}>
-                    CSS
-                </div>
-                <div className={styles.skills_div}>
-                    CSS
-                </div>
-                <div className={styles.skills_div}>
-                    CSS
-                </div>
-                <div className={styles.skills_div}>
-                    CSS
-                </div>
+                {
+                    currSkill ? currSkill.map((e, idx) => (
+                        <div key={idx} className={styles.skills_div}>
+                            {e}
+                        </div>
+                      )) : null
+                }
+                
             </div>
         </div>
 

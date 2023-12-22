@@ -27,7 +27,8 @@
 
 .skillbox{
     height: 2rem;
-    width: 5.5rem;
+    width: auto;
+    padding: 10px;
     background-color: #FFEEEE;
     display: flex;
     align-items: center;

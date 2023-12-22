@@ -2,25 +2,22 @@ import React, { useContext } from 'react'
 import styles from '../styles/jobcards.module.css'
 import flag from '../assets/flag.png'
 import person from '../assets/personLogo.png'
-import companyLogo from '../assets/compayLogo.png'
 import ruppee from '../assets/ruppee.png'
 import {SkillBox} from './Keyword'
 import { useNavigate } from 'react-router-dom'
-import toast from 'react-hot-toast'
 import { Context } from '..'
 
-const Jobcards = ({id, position, salary, location, remote_office, type, skills}) => {
+const Jobcards = ({id, position, logo, salary, location, remote_office, type, skills}) => {
     const navigate = useNavigate()
 
-    const {isAuthenticated, setJob_id, setFormEdit} = useContext(Context)
+    const {isAuthenticated, setJob_id, setFormEdit, setCurrSkill} = useContext(Context)
     const showFullDetails = () => {
         navigate('/view-job-details')
-        toast.success(id)
         setJob_id(id)
+        setCurrSkill(skills)
     }
 
     const handleEditBtn = (e) => {
-        toast.success(id)
         navigate('/add-job')
         setJob_id(id)
         setFormEdit(true)
@@ -30,7 +27,7 @@ const Jobcards = ({id, position, salary, location, remote_office, type, skills})
   return (
     <div className={styles.jobcards}>
       <div className={styles.jobcard_left_part}>
-            <img className={styles.companyLogo} src={companyLogo} alt="" />
+            <img className={styles.companyLogo} src={logo} alt="" />
             <div className={styles.info}>
                 <div className={styles.job}>
                     <span className={styles.job_title}>{position}</span>

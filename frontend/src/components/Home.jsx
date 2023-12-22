@@ -176,8 +176,9 @@ const Home = () => {
             <Jobcards 
             key={idx} 
             id={e._id}
-            position={e.job_position?.toUpperCase()}
+            position={e.job_position}
             name={e.company_name} 
+            logo={e.company_logo}
             salary={e.monthly_salary}
             location={e.location}
             remote_office={e.remote_office}
