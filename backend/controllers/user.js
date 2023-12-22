@@ -88,7 +88,7 @@ const updateJob = async (req, res, next) => {
 
         const updatedJob = await jobCollection.findByIdAndUpdate(
             id,
-            { ...req.body, user: user._id },
+            { ...req.body, skills : req.body.skills.split(',').map(skill => skill.trim()), user: user._id },
             { new: true }
         );
 

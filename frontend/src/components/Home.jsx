@@ -65,7 +65,6 @@ const Home = () => {
     } catch (error) {
       setLoading(false)
       setIsAuthenticated(false)
-      toast.error(error.response.data.message)
     }
     
   }
