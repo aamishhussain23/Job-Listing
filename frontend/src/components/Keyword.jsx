@@ -3,7 +3,6 @@ import styles from '../styles/keyword.module.css'
 
 
 const Keyword = ({skill, setSkillsArr, id}) => {
-  // console.log(id)
   const handleCross = () => {
       setSkillsArr((prevSkillsArr) => {
         const updatedSkillsArr = [...prevSkillsArr];

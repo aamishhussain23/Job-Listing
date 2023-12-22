@@ -5,6 +5,7 @@ import { Context } from '..'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import { server } from '../App'
+import Loader from './Loader'
 
 const Login = () => {
   const {isAuthenticated, setIsAuthenticated, loading, setLoading} = useContext(Context)
@@ -24,14 +25,17 @@ const Login = () => {
         toast.error(error.response.data.message)
         setIsAuthenticated(false)
         setLoading(false)
-        // console.log(error)
       }
   }
 
   if(isAuthenticated) return <Navigate to={'/'}/>
 
   return (
-    <div className={styles.container}>
+    <>
+      {
+        loading ? <Loader/> : 
+
+        <div className={styles.container}>
       <div className={styles.container}>
       <div className={styles.left_part}>
             <form onSubmit={loginHandler} className={styles.form}>
@@ -44,7 +48,7 @@ const Login = () => {
                 <input required autoComplete="current-password" type="password" name="password" onChange={(e) => setPassword(e.target.value)} placeholder='Password' />
                 <br />
                 <br />
-                <button disabled = {loading} >Sign in</button>
+                <button >Sign in</button>
                 <br />
                 <br />
                 <p style={{color : '#525252'}}>Don’t have an account? <Link to={'/register'} style={{fontWeight: '700', color: 'black'}}>Sign Up</Link></p>
@@ -56,6 +60,8 @@ const Login = () => {
       </div>
     </div>
     </div>
+      }
+    </>
   )
 }
 

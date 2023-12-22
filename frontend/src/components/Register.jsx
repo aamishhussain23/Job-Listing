@@ -6,11 +6,11 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useContext } from 'react'
 import { Context } from '../index'
+import Loader from './Loader'
 
 const Register = () => { 
 
   const {loading, setLoading, isAuthenticated, setIsAuthenticated} = useContext(Context)
-  // console.log(loading)
 
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -23,7 +23,7 @@ const Register = () => {
     setLoading(true)
     try {
         const {data} = await axios.post(`${server}/register`, {name, email, mobile, password}, {withCredentials : true, headers : {"Content-Type" : "application/json"}})
-        // console.log(data)
+
         toast.success(data.message)
         setIsAuthenticated(true)
         setLoading(false)
@@ -31,14 +31,17 @@ const Register = () => {
         toast.error(error.response.data.message)
         setIsAuthenticated(false)
         setLoading(false)
-        // console.log(error)
       }
   }
 
   if(isAuthenticated) return <Navigate to={'/'}/>
 
   return (
-    <div className={styles.container}>
+    <>
+      {
+        loading ? <Loader/> : 
+
+        <div className={styles.container}>
       <div className={styles.left_part}>
             <form onSubmit={registerHandler} className={styles.form}>
                 <p className={styles.create_accnt}>Create an account</p>
@@ -56,7 +59,7 @@ const Register = () => {
                 <span><input required type="checkbox" name="checkbox" style={{marginRight : '10px', color : '#525252'}} />By creating an account, I agree to our terms of use and privacy policy</span>
                 <br />
                 <br />
-                <button disabled = {loading}>Create Account</button>
+                <button >Create Account</button>
                 <br />
                 <br />
                 <p style={{color : '#525252'}}>Already have an account? <Link to={'/login'} style={{fontWeight: '700', color: 'black'}}>Sign In</Link></p>
@@ -67,6 +70,8 @@ const Register = () => {
             <p>Your Personal Job Finder</p>
       </div>
     </div>
+      }
+    </>
   )
 }
 

@@ -25,6 +25,7 @@ const Home = () => {
   
 
   const searchJobApi = async () => {
+    setLoading(true)
     try {
       const { data } = await axios.post(
         `${server}/searchJob`,
@@ -41,6 +42,7 @@ const Home = () => {
 
   
   const getAllJobsApi = async () => {
+    setLoading(true)
     try {
       const { data } = await axios.get(`${server}/getAllJobs`, { withCredentials: true });
       
@@ -97,11 +99,21 @@ const Home = () => {
   }
   
   const handleSearchClick = (e) => {
-    e.preventDefault(); 
-    if(job_title.length === 0 && skillsArr.length === 0){
-      return getAllJobsApi()
+    e.preventDefault();
+    const inputValue = e.target.parentElement.querySelector('input').value;
+
+    if (inputValue.length === 0 && skillsArr.length === 0) {
+      return getAllJobsApi();
     }
+
+    setJob_title(inputValue);
     searchJobApi();
+  };
+
+  const handleEnterPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearchClick(e);
+    }
   };
   
   useEffect(() => {
@@ -111,7 +123,7 @@ const Home = () => {
       else{
         searchJobApi()
       }
-  }, [skillsArr, job_title])
+  }, [])
 
 
   useEffect(() => {
@@ -129,7 +141,7 @@ const Home = () => {
         <div className={styles.searchArea}>
             <div className={styles.search}>
                 <img onClick={handleSearchClick} src={searchIcon} alt="" role="button" />
-                <input onChange={(e) => setJob_title(e.target.value)} type="text" placeholder='Type any job title'/>
+                <input onChange={(e) => setJob_title(e.target.value)} value={job_title} onKeyDown={handleEnterPress} type="text" placeholder='Type any job title'/>
             </div>
             <div className={styles.wrapper}>
               <select onChange={addSkills} className={styles.select} name="Skills">
@@ -155,7 +167,7 @@ const Home = () => {
                 {
                   isAuthenticated ? <button onClick={goToAddJobPage} className={styles.addjob}>+ Add Job</button> : null
                 }
-              <p onClick={() => setSkillsArr([])} className={styles.clear}>Clear</p>
+              <p onClick={() => {setSkillsArr([]); setJob_title("")}} className={styles.clear}>Clear</p>
             </div>
         </div>
         <br />

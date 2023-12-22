@@ -1,5 +1,5 @@
 .header{
-    height: 5rem;
+    height: 6rem;
     width: 100%;
     background-color: #ED5353;
     display: flex;
@@ -69,6 +69,17 @@
 }
 
 @media (max-width: 610px){
+    .header{
+        height: 4rem;
+    }
+    .buttons > button{
+        height: 2rem;
+        width: 4.5rem;
+    }
+    .login{
+        margin-left: 10px;
+    }
+
     .logoutWidth{
         width: 9rem;
     }

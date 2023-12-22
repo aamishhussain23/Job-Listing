@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import styles from '../styles/navbar.module.css'
 import helmentMan from '../assets/helmetMan.png'
-// import isAuthenticated from '../../../backend/middlewares/auth'
 import { Link, useNavigate } from 'react-router-dom'
 import { server } from '../App'
 import axios from 'axios'

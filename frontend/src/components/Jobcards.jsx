@@ -8,15 +8,15 @@ import {SkillBox} from './Keyword'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { Context } from '..'
-// import axios from 'axios'
-// import { server } from '../App'
 
-const Jobcards = ({id, position, name, salary, location, remote_office, type, skills}) => {
+const Jobcards = ({id, position, salary, location, remote_office, type, skills}) => {
     const navigate = useNavigate()
 
     const {isAuthenticated, setJob_id, setFormEdit} = useContext(Context)
     const showFullDetails = () => {
+        navigate('/view-job-details')
         toast.success(id)
+        setJob_id(id)
     }
 
     const handleEditBtn = (e) => {
