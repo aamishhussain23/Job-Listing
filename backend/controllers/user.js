@@ -67,7 +67,8 @@ const addJob = async (req, res, next) => {
     try {
         const job = await jobCollection.create({
             ...req.body,
-            skills : req.body.skills.split(',').map(skill => skill.trim()),
+            job_position : req.body.job_position.toLowerCase(),
+            skills : req.body.skills.split(/\s*,\s*/).map(skill => skill.trim()),
             user: req.user._id,
         });
 
@@ -109,9 +110,11 @@ const searchJob = async (req, res, next) => {
     try {
         const {job_position, skills} = req.body
 
+        const jobPositionRegex = new RegExp(job_position, 'i');
+
         const jobs = await jobCollection.find({
             $or: [
-              { job_position: { $eq: job_position } },
+              { job_position: jobPositionRegex },
               { skills: { $in: skills } }
             ]
           }).select('-user');

@@ -122,7 +122,7 @@ const Home = () => {
       else{
         searchJobApi()
       }
-  }, [])
+  }, [skillsArr])
 
 
   useEffect(() => {
