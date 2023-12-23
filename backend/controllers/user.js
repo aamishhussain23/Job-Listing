@@ -87,9 +87,11 @@ const updateJob = async (req, res, next) => {
         const { id } = req.params;
         const { user } = req; 
 
+        const skillsArray = typeof req.body.skills === 'string' ? req.body.skills.split(/\s*,\s*/).map(skill => skill.trim()) : req.body.skills;
+
         const updatedJob = await jobCollection.findByIdAndUpdate(
             id,
-            { ...req.body, skills : req.body.skills.split(/\s*,\s*/).map(skill => skill.trim()), user: user._id },
+            { ...req.body, skills: skillsArray, user: user._id },
             { new: true }
         );
 
