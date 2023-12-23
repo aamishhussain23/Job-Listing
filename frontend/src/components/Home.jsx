@@ -131,8 +131,6 @@ const Home = () => {
 
   return (
     <>
-      {
-        loading ? <Loader/> : 
         <div className={styles.container}> 
         <Navbar name={user.name?.split(' ')[0]}></Navbar>
 
@@ -171,25 +169,32 @@ const Home = () => {
         </div>
         <br />
         <br />
+
         {
-          jobs ? jobs.map((e, idx) => (
-            <Jobcards 
-            key={idx} 
-            id={e._id}
-            position={e.job_position}
-            name={e.company_name} 
-            logo={e.company_logo}
-            salary={e.monthly_salary}
-            location={e.location}
-            remote_office={e.remote_office}
-            type={e.job_type}
-            skills={e.skills}
-            ></Jobcards>
-          )) : null
+          loading ? <Loader/> : 
+          <>
+              {
+                jobs ? jobs.map((e, idx) => (
+                  <Jobcards 
+                  key={idx} 
+                  id={e._id}
+                  position={e.job_position}
+                  name={e.company_name} 
+                  logo={e.company_logo}
+                  salary={e.monthly_salary}
+                  location={e.location}
+                  remote_office={e.remote_office}
+                  type={e.job_type}
+                  skills={e.skills}
+                  ></Jobcards>
+                )) : null
+              }
+          </>
         }
+        
       </main>
     </div>
-      }
+      
     </>
   )
 }

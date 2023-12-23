@@ -6,7 +6,7 @@ const Loader = () => {
   const { loading } = useContext(Context);
 
   return (
-    <div style={{position : 'fixed', top : '50%', left : '50%', transform: "translate(-50%, -50%)"}}>
+    <div style={{position : 'fixed', top : '70%', left : '50%', transform: "translate(-50%, -50%)"}}>
       <PropagateLoader 
         color={"#36d7b7"}
         loading={loading}

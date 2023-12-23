@@ -6,7 +6,6 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useContext } from 'react'
 import { Context } from '../index'
-import Loader from './Loader'
 
 const Register = () => { 
 
@@ -38,8 +37,6 @@ const Register = () => {
 
   return (
     <>
-      {
-        loading ? <Loader/> : 
 
         <div className={styles.container}>
       <div className={styles.left_part}>
@@ -59,7 +56,7 @@ const Register = () => {
                 <span><input required type="checkbox" name="checkbox" style={{marginRight : '10px', color : '#525252'}} />By creating an account, I agree to our terms of use and privacy policy</span>
                 <br />
                 <br />
-                <button >Create Account</button>
+                <button >{loading ? "Creating..." : "Create Account"}</button>
                 <br />
                 <br />
                 <p style={{color : '#525252'}}>Already have an account? <Link to={'/login'} style={{fontWeight: '700', color: 'black'}}>Sign In</Link></p>
@@ -70,7 +67,6 @@ const Register = () => {
             <p>Your Personal Job Finder</p>
       </div>
     </div>
-      }
     </>
   )
 }
