@@ -56,7 +56,7 @@ const Editjob = () => {
                     location ,
                     job_description ,
                     about_company ,
-                    skills ,
+                    skills : skills.map(skill => skill.toLowerCase()) ,
                     information 
                 },
                 {
