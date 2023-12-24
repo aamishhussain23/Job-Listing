@@ -7,15 +7,17 @@ import axios from 'axios'
 import { Context } from '..'
 import { server } from '../App'
 import toast from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const Viewdetails = () => {
 
-    const {isAuthenticated, setIsAuthenticated, setLoading, setFormEdit, job_id, setJob_id, currSkill} = useContext(Context)
+    const {isAuthenticated, setIsAuthenticated, setLoading, setFormEdit, job_id, setJob_id} = useContext(Context)
 
     const [user, setUser] = useState({})
     const [company, setCompany] = useState({})
+    const [skills, setSkills] = useState([])
     const navigate = useNavigate()
+    const { id } = useParams();
 
     const getMyProfileApi = async () => {
         setLoading(true)
@@ -30,23 +32,23 @@ const Viewdetails = () => {
         }
         
       }
-
+      
 
       const getSpecificJobApi = async () => {
         try {
-            const {data} = await axios(`${server}/job/${job_id}`, {withCredentials : true})
-            
+            const {data} = await axios(`${server}/job/${id}`, {withCredentials : true})
+            setSkills(data.job.skills)
             setCompany(data.job)
-            console.log(data.job)
             
         } catch (error) {
             toast.error(error.response.data.message)
         }        
     }
 
+    
+
     const handleEditBtn = (e) => {
-        toast.success(job_id)
-        navigate('/add-job')
+        navigate(`/edit-job/${id}`)
         setJob_id(job_id)
         setFormEdit(true)
     }
@@ -55,6 +57,7 @@ const Viewdetails = () => {
         getMyProfileApi()
         getSpecificJobApi()
       }, [])
+
   return (
     <div className={styles.container}>
       <Navbar name={user.name?.split(' ')[0]}></Navbar>
@@ -121,7 +124,7 @@ const Viewdetails = () => {
             <br />
             <div className={styles.allSkills}>
                 {
-                    currSkill ? currSkill.map((e, idx) => (
+                    skills ? skills.map((e, idx) => (
                         <div key={idx} className={styles.skills_div}>
                             {e}
                         </div>

@@ -1,27 +1,50 @@
-import React, { useContext, useRef } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import styles from '../styles/addJob.module.css'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Context } from '..'
 import axios from 'axios'
 import { server } from '../App'
 import toast from 'react-hot-toast'
 
+const Editjob = () => {
 
-const JobPage = () => {
     const {company_name, setCompany_name, company_logo, setCompany_logo, job_position, setJob_position, monthly_salary, setMonthly_salary,
         job_type, setJob_type, job_duration , setJob_duration, remote_office , setRemote_office,
         location , setLocation, job_description , setJob_description, about_company , setAbout_company,
-        skills , setSkills, information , setInformation, setLoading, setIsAuthenticated, loading} = useContext(Context)
+        skills , setSkills, information , setInformation, setLoading, setIsAuthenticated, job_id, loading} = useContext(Context)
 
     const formRef = useRef()
     const navigate = useNavigate()
+    const { id } = useParams();
 
-    const addJobHandler = async (e) => { 
+    const getSpecificJobApi = async () => {
+        try {
+            const {data} = await axios(`${server}/job/${id}`, {withCredentials : true})
+            setCompany_name(data.job.company_name);
+            setCompany_logo(data.job.company_logo);
+            setJob_position(data.job.job_position);
+            setMonthly_salary(data.job.monthly_salary);
+            setJob_type(data.job.job_type);
+            setJob_duration(data.job.job_duration);
+            setRemote_office(data.job.remote_office);
+            setLocation(data.job.location);
+            setJob_description(data.job.job_description);
+            setAbout_company(data.job.about_company);
+            setSkills(data.job.skills);
+            setInformation(data.job.information);
+            
+        } catch (error) {
+            toast.error(error.response.data.message)
+        }        
+    }
+
+    const SaveJob = async (e) => {
         e.preventDefault()
         setLoading(true)
+
         try {
-            const { data } = await axios.post(
-                `${server}/add-job`,
+            const { data } = await axios.put(
+                `${server}/update-job/${id}`,
                 {
                     company_name ,
                     company_logo ,
@@ -50,15 +73,21 @@ const JobPage = () => {
             setIsAuthenticated(false)
             setLoading(false)
             toast.error(error.response.data.message)
+            console.log(error.response.data.message)
+            
         }
     }
-    
+
+    useEffect(() => { 
+        getSpecificJobApi()
+
+    }, [job_id])
 
   return (
     <div className={styles.container}>
       <div className={styles.left_part}>
-            <form ref={formRef} onSubmit={addJobHandler} className={styles.form}>
-                <p className={styles.heading}>Add job description</p>
+            <form ref={formRef} onSubmit={SaveJob} className={styles.form}>
+                <p className={styles.heading}>Edit job description</p>
                 <br /> 
                 <div className={styles.pAndInput}>
                     <p>Company Name</p>
@@ -121,16 +150,16 @@ const JobPage = () => {
                     <p>Information</p>
                     <input value={information} required type="text" name='information' onChange={(e) => setInformation(e.target.value)} placeholder='Enter the additional information' />
                 </div> 
-                <button>{loading ? "Adding..." : "+ Add Job"}</button>
+                <button>{loading ? "Saving..." : "Save"}</button>
                 <input onClick={() => navigate('/')} type="button" value="Cancel"/>
             </form> 
       </div>
       <div className={styles.right_part}>
             {/* using image here  */}
-            <p>Recruiter add job details here</p>
+            <p>Recruiter edit job details here</p>
       </div>
     </div>
   )
 }
 
-export default JobPage
+export default Editjob

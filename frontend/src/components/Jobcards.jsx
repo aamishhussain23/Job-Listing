@@ -10,15 +10,14 @@ import { Context } from '..'
 const Jobcards = ({id, position, logo, salary, location, remote_office, type, skills}) => {
     const navigate = useNavigate()
 
-    const {isAuthenticated, setJob_id, setFormEdit, setCurrSkill} = useContext(Context)
+    const {isAuthenticated, setJob_id, setFormEdit} = useContext(Context)
     const showFullDetails = () => {
-        navigate('/view-job-details')
+        navigate(`/view-job-details/${id}`)
         setJob_id(id)
-        setCurrSkill(skills)
     }
 
     const handleEditBtn = (e) => {
-        navigate('/add-job')
+        navigate(`/edit-job/${id}`)
         setJob_id(id)
         setFormEdit(true)
     }

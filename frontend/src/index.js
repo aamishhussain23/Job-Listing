@@ -23,13 +23,12 @@ const Wrapper = () => {
     const [skills , setSkills ] = useState("")
     const [information , setInformation ] = useState("")
     const [formEdit, setFormEdit] = useState(false)
-    const [currSkill, setCurrSkill] = useState([])
   return (
     <Context.Provider value={{isAuthenticated, setIsAuthenticated, loading, setLoading, job_id, setJob_id,
       company_name, setCompany_name, company_logo, setCompany_logo, job_position, setJob_position, monthly_salary,
       setMonthly_salary, job_type, setJob_type, job_duration , setJob_duration, remote_office , setRemote_office,
       location , setLocation, job_description , setJob_description, about_company , setAbout_company,
-      skills , setSkills, information , setInformation, formEdit, setFormEdit, currSkill, setCurrSkill}}>
+      skills , setSkills, information , setInformation, formEdit, setFormEdit}}>
       <App />
     </Context.Provider> 
   )

@@ -120,8 +120,6 @@ const Home = () => {
       getAllJobsApi()
     }
     else{
-      console.log(job_title)
-      console.log(skillsArr)
       searchJobApi()
     }
   }, [skillsArr])
