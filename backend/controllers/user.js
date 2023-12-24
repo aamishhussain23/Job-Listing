@@ -118,7 +118,7 @@ const searchJob = async (req, res, next) => {
         query = {
             $or: [
             { job_position: new RegExp(job_position, "i") },
-            { skills: { $in: skills } },
+            { skills: { $in: skills.map(skill => new RegExp(skill, "i")) } }
             ],
         };
         } else {
