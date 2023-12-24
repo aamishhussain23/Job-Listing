@@ -143,7 +143,7 @@ const Home = () => {
                 <input onChange={(e) => setJob_title(e.target.value)} value={job_title} onKeyDown={handleEnterPress} type="text" placeholder='Type any job title'/>
             </div>
             <div className={styles.wrapper}>
-              <select onChange={addSkills} className={styles.select} name="Skills">
+              <select onChange={addSkills} className={styles.select} name="Skills" value={skillsArr.join(",")}>
                 <option value="">Skills</option>
                 <option value="html">HTML</option>
                 <option value="css">CSS</option>
