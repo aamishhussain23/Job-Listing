@@ -68,7 +68,7 @@ const addJob = async (req, res, next) => {
         const job = await jobCollection.create({
             ...req.body,
             job_position : req.body.job_position.toLowerCase(),
-            skills : req.body.skills.split(/\s*,\s*/).map(skill => skill.trim()),
+            skills : req.body.skills.split(/\s*,\s*/).map(skill => skill.trim().toLowerCase()),
             user: req.user._id,
         });
 
@@ -87,7 +87,7 @@ const updateJob = async (req, res, next) => {
         const { id } = req.params;
         const { user } = req; 
 
-        const skillsArray = typeof req.body.skills === 'string' ? req.body.skills.split(/\s*,\s*/).map(skill => skill.trim()) : req.body.skills;
+        const skillsArray = typeof req.body.skills === 'string' ? req.body.skills.split(/\s*,\s*/).map(skill => skill.trim().toLowerCase()) : req.body.skills;
 
         const updatedJob = await jobCollection.findByIdAndUpdate(
             id,
