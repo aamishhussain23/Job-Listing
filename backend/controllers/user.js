@@ -112,14 +112,20 @@ const searchJob = async (req, res, next) => {
     try {
         const {job_position, skills} = req.body
 
-        const jobPositionRegex = new RegExp(job_position, 'i');
+        let query = {};
 
-        const jobs = await jobCollection.find({
+        if (job_position && job_position.trim() !== "") {
+        query = {
             $or: [
-              { job_position: jobPositionRegex },
-              { skills: { $in: skills } }
-            ]
-          }).select('-user');
+            { job_position: new RegExp(job_position, "i") },
+            { skills: { $in: skills } },
+            ],
+        };
+        } else {
+        query = { skills: { $in: skills } };
+        }
+
+        const jobs = await jobCollection.find(query).select('-user');
 
         if(!jobs){
             return next(new ErrorHandler("Jobs not found", 404))

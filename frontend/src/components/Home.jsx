@@ -117,11 +117,13 @@ const Home = () => {
   
   useEffect(() => {
     if(job_title.length === 0 && skillsArr.length === 0){
-        getAllJobsApi()
-      }
-      else{
-        searchJobApi()
-      }
+      getAllJobsApi()
+    }
+    else{
+      console.log(job_title)
+      console.log(skillsArr)
+      searchJobApi()
+    }
   }, [skillsArr])
 
 
