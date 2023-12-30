@@ -24,3 +24,6 @@ Welcome to the Job Listing Platform, a web application that allows users to post
    ```
 
    2. Navigate to the frontend folder and install frontend dependencies:
+    ```bash
+    cd ../frontend
+    npm install
