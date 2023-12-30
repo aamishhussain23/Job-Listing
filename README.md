@@ -16,9 +16,11 @@ Welcome to the Job Listing Platform, a web application that allows users to post
    git clone https://github.com/aamishhussain23/Job-Listing.git
    cd Job-Listing
 
-Install Backend Dependencies:
+### Install Backend Dependencies:
 Navigate to the backend folder and install backend dependencies:
    ```bash
    cd backend
    npm install
+   ```
 
+Navigate to the frontend folder and install frontend dependencies:
