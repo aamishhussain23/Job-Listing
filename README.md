@@ -17,10 +17,10 @@ Welcome to the Job Listing Platform, a web application that allows users to post
    cd Job-Listing
 
 ### Install Backend Dependencies:
-   - Navigate to the backend folder and install backend dependencies:
+   1. Navigate to the backend folder and install backend dependencies:
    ```bash
    cd backend
    npm install
    ```
 
-   - Navigate to the frontend folder and install frontend dependencies:
+   2. Navigate to the frontend folder and install frontend dependencies:
