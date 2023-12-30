@@ -17,11 +17,11 @@ Welcome to the Job Listing Platform, a web application that allows users to post
      cd Job-Listing
    
 2. **Install Dependencies:**
-   # Navigate to the backend folder
+   ### Navigate to the backend folder
      cd backend
      npm install
 
-   # Navigate to the frontend folder
+   ### Navigate to the frontend folder
      cd ../frontend
      npm install
 
