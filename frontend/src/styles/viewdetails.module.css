@@ -161,8 +161,10 @@
 @media (max-width : 610px){
     .company_short_info{
         top: 3.5rem;
+        width: 95%;
     }
     .jobDetails{
         top: 12rem;
+        width: 95%;
     }
 }

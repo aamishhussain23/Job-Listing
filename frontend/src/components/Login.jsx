@@ -7,9 +7,10 @@ import axios from 'axios'
 import { server } from '../App'
 
 const Login = () => {
-  const {isAuthenticated, setIsAuthenticated, loading, setLoading} = useContext(Context)
+  const {isAuthenticated, setIsAuthenticated} = useContext(Context)
   const [email, setEmail] = useState("") 
   const [password, setPassword] = useState("") 
+  const [loading, setLoading] = useState(false)
 
   const loginHandler = async (e) => {
       e.preventDefault()

@@ -9,12 +9,13 @@ import { Context } from '../index'
 
 const Register = () => { 
 
-  const {loading, setLoading, isAuthenticated, setIsAuthenticated} = useContext(Context)
+  const {isAuthenticated, setIsAuthenticated} = useContext(Context)
 
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [mobile, setMobile] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const registerHandler = async (e) => {
     e.preventDefault()
